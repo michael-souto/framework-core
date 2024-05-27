@@ -10,6 +10,7 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import com.detrasoft.framework.core.notification.Message;
@@ -149,6 +150,19 @@ public class GeneralFunctionsCore {
 	public static LocalTime LocalTimeNow() {
 		ZonedDateTime zdtAtET = ZonedDateTime.now(ZoneId.of(GMT));
 		return zdtAtET.toLocalTime();
+	}
+
+	public static boolean isValidUUID(String uuidString) {
+		try {
+			// Tenta criar um objeto UUID com a string fornecida
+			UUID uuid = UUID.fromString(uuidString);
+
+			// Se o objeto UUID for criado com sucesso, a string é um UUID válido
+			return true;
+		} catch (IllegalArgumentException e) {
+			// Se ocorrer uma exceção, a string não é um UUID válido
+			return false;
+		}
 	}
 
 }
