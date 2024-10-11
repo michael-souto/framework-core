@@ -1,7 +1,8 @@
 package com.detrasoft.framework.core.notification;
 
-public enum TypeMessage {
+public enum MessageType {
 	error,
 	success,
-	warning
+	warning,
+	info
 }

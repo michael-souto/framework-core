@@ -1,23 +1,18 @@
 package com.detrasoft.framework.core.service;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.detrasoft.framework.core.library.MessageFunctionsCore;
 import com.detrasoft.framework.core.notification.Message;
-import com.detrasoft.framework.core.notification.TypeMessage;
-import com.detrasoft.framework.core.resource.ResourceFunctions;
+import com.detrasoft.framework.core.notification.MessageType;
+import com.detrasoft.framework.core.resource.Translator;
+import com.detrasoft.framework.enums.CodeMessages;
 
-public abstract class GenericService implements Serializable {
+public abstract class GenericService {
 
-	private static final long serialVersionUID = 8589785023145103088L;
-
-	protected List<Message> messages;
-	
-	public GenericService() {
-		messages = new ArrayList<Message>();
-	}
-	
+    protected List<Message> messages = new ArrayList<>();
+    
 	public List<Message> getMessages() {
 		return messages;
 	}
@@ -29,7 +24,7 @@ public abstract class GenericService implements Serializable {
 	public boolean hasFatalError() {
 		boolean fatalError = false;
 		for (Message messageService : messages) {
-			if (messageService.getType() == TypeMessage.error) {
+			if (messageService.getType() == MessageType.error) {
 				fatalError = true;
 				break;
 			} else
@@ -41,7 +36,7 @@ public abstract class GenericService implements Serializable {
 	public boolean hasFatalError(List<Message> messages) {
 		boolean fatalError = false;
 		for (Message messageService : messages) {
-			if (messageService.getType() == TypeMessage.error) {
+			if (messageService.getType() == MessageType.error) {
 				fatalError = true;
 				break;
 			} else
@@ -49,27 +44,23 @@ public abstract class GenericService implements Serializable {
 		}
 		return fatalError;
 	}
-	
-	public void addMessage(String code, TypeMessage type, String description ) {
-		messages.add(new Message(code, type, description));
-	}
-	
-	public void addMessageTranslated(String code, TypeMessage type) {
-		String message = ResourceFunctions.getText(this.getClass(), code);
-		if (message == null) {
-			message = "MENSAGEM N�O ENCONTRADA, C�DIGO: "+code;
-		}
-		messages.add(new Message(code, type, message));
-	}
-	
-	public void addMessageTranslated(String code, String complement, TypeMessage type) {
-		String message = ResourceFunctions.getText(this.getClass(), code);
 		
-		if (message == null) {
-			message = "MENSAGEM N�O ENCONTRADA, C�DIGO: "+code;
+	public void addMessageTranslated(CodeMessages code, String target, MessageType type) {
+		String message = Translator.getTranslatedText(code.toString(),true);
+		MessageFunctionsCore.addMessage(messages, code.toString(), target, message, type);
+	}
+	
+	public void addMessageTranslated(CodeMessages code, String target, MessageType type, Object ...args) {
+		String message = Translator.getTranslatedText(code.toString().toLowerCase(), args);
+        MessageFunctionsCore.addMessage(messages, code.toString(), target, message, type);
+	}
+
+	protected Throwable getRootCause(Throwable throwable) {
+		Throwable cause = throwable.getCause();
+		if (cause != null && cause != throwable) {
+			return getRootCause(cause);
 		} else {
-			message = message + " " + complement;
+			return throwable;
 		}
-		messages.add(new Message(code, type, message));
 	}
 }

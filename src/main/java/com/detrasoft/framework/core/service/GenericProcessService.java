@@ -3,7 +3,7 @@ package com.detrasoft.framework.core.service;
 import java.io.Serializable;
 
 import com.detrasoft.framework.core.exception.ProcessException;
-import com.detrasoft.framework.core.notification.TypeMessage;
+import com.detrasoft.framework.core.library.MessageFunctionsCore;
 
 public abstract class GenericProcessService<T> extends GenericService implements Serializable {
 
@@ -29,7 +29,7 @@ public abstract class GenericProcessService<T> extends GenericService implements
 
 		} catch (Exception e) {
 			if (!e.getClass().equals(ProcessException.class)) {
-				addMessage("Erro", TypeMessage.error, e.getMessage());
+				MessageFunctionsCore.addErrorMessage(null,e.getMessage());
 				throw new ProcessException(e.getMessage());
 			} else
 				throw e;
@@ -58,7 +58,7 @@ public abstract class GenericProcessService<T> extends GenericService implements
 
 		} catch (Exception e) {
 			if (!e.getClass().equals(ProcessException.class)) {
-				addMessage("Erro", TypeMessage.error, e.getMessage());
+				MessageFunctionsCore.addErrorMessage(null,e.getMessage());
 				throw new ProcessException(e.getMessage());
 			} else
 				throw e;

@@ -14,7 +14,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import com.detrasoft.framework.core.notification.Message;
-import com.detrasoft.framework.core.notification.TypeMessage;
+import com.detrasoft.framework.core.notification.MessageType;
 
 public class GeneralFunctionsCore {
 
@@ -23,13 +23,13 @@ public class GeneralFunctionsCore {
 	public static void clearMessagesSuccess(List<Message> listMessages) {
 		Boolean temErro = false;
 		for (Message msg : listMessages) {
-			if (msg.getType() == TypeMessage.error) {
+			if (msg.getType() == MessageType.error) {
 				temErro = true;
 				break;
 			}
 		}
 		if (temErro) {
-			listMessages.removeIf(x -> x.getType() == TypeMessage.success);
+			listMessages.removeIf(x -> x.getType() == MessageType.success);
 		}
 	}
 
@@ -40,7 +40,7 @@ public class GeneralFunctionsCore {
 	public static boolean hasFatalError(List<Message> messages) {
 		boolean fatalError = false;
 		for (Message messageService : messages) {
-			if (messageService.getType() == TypeMessage.error) {
+			if (messageService.getType() == MessageType.error) {
 				fatalError = true;
 				break;
 			} else
