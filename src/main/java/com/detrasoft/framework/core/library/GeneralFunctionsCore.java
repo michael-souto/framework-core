@@ -2,6 +2,7 @@ package com.detrasoft.framework.core.library;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.security.SecureRandom;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -164,5 +165,23 @@ public class GeneralFunctionsCore {
 			return false;
 		}
 	}
+
+	public static String generateRandomNumber(int length) {
+		SecureRandom random = new SecureRandom();
+
+        if (length <= 0) {
+            throw new IllegalArgumentException("Length must be greater than zero.");
+        }
+
+        StringBuilder randomNumber = new StringBuilder(length);
+
+        for (int i = 0; i < length; i++) {
+            int digit = random.nextInt(10);
+            randomNumber.append(digit);
+        }
+
+        return randomNumber.toString();
+    }
+
 
 }
