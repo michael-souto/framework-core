@@ -183,5 +183,12 @@ public class GeneralFunctionsCore {
         return randomNumber.toString();
     }
 
+	public static String formatCamelCase(String text) {
+		if (text == null || text.isEmpty()) {
+			return text;
+		}
+		// Deixa a primeira letra minúscula e o restante permanece como está.
+		return text.substring(0, 1).toLowerCase() + text.substring(1);
+	}
 
 }
