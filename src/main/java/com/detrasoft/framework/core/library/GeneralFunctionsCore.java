@@ -11,7 +11,10 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import com.detrasoft.framework.core.notification.Message;
@@ -20,6 +23,15 @@ import com.detrasoft.framework.core.notification.MessageType;
 public class GeneralFunctionsCore {
 
 	private static final String GMT = "America/Sao_Paulo";
+	
+	public static boolean checkEmpty(Map<String, Object> map) {
+        for (Object value : map.values()) {
+            if (value != null) {
+                return false;
+            }
+        }
+        return true;
+    }
 	
 	public static void clearMessagesSuccess(List<Message> listMessages) {
 		Boolean temErro = false;
@@ -190,5 +202,102 @@ public class GeneralFunctionsCore {
 		// Deixa a primeira letra minúscula e o restante permanece como está.
 		return text.substring(0, 1).toLowerCase() + text.substring(1);
 	}
+
+	public static String convertToTitle(String texto) {
+        if (texto == null || texto.isEmpty()) {
+            return texto;
+        }
+
+        StringBuilder resultado = new StringBuilder();
+        boolean proximoDeveSerMaiusculo = true;
+
+        for (char caractere : texto.toCharArray()) {
+            if (Character.isLetterOrDigit(caractere)) {
+                if (proximoDeveSerMaiusculo) {
+                    resultado.append(Character.toUpperCase(caractere));
+                } else {
+                    resultado.append(Character.toLowerCase(caractere));
+                }
+                proximoDeveSerMaiusculo = false;
+            } else {
+                resultado.append(caractere);
+                proximoDeveSerMaiusculo = true;
+            }
+        }
+
+        return resultado.toString();
+    }
+	
+	public static String removeLeadingCharacters(String texto, char caractere) {
+        if (texto == null || texto.isEmpty()) {
+            return texto;
+        }
+
+        int index = 0;
+        while (index < texto.length() && texto.charAt(index) == caractere) {
+            index++;
+        }
+
+        return texto.substring(index);
+    }
+
+	public static String removeTrailingCharacters(String texto, char caractere) {
+        if (texto == null || texto.isEmpty()) {
+            return texto;
+        }
+
+        int index = texto.length() - 1;
+        while (index >= 0 && texto.charAt(index) == caractere) {
+            index--;
+        }
+
+        return texto.substring(0, index + 1);
+    }
+	
+	public static String formatWithRegex(String texto, String regex) {
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(texto);
+
+        StringBuffer resultado = new StringBuffer();
+        while (matcher.find()) {
+            matcher.appendReplacement(resultado, matcher.group().replaceAll(regex, "$1"));
+        }
+        matcher.appendTail(resultado);
+
+        return resultado.toString();
+    }
+	
+	public static String removeSpaces(String texto) {
+        if (texto == null) {
+            return null;
+        }
+
+        return texto.replaceAll("\\s", "");
+    }
+	
+	public static String copySubstring(String texto, String intervalo) {
+        if (texto == null || intervalo == null || intervalo.length() < 5) {
+            return null;
+        }
+
+        int inicio = Integer.parseInt(intervalo.substring(0, intervalo.indexOf(".")));
+        int fim = Integer.parseInt(intervalo.substring(intervalo.lastIndexOf(".") + 1));
+        if (fim > texto.length()) {
+        	fim = texto.length();
+        }
+
+        if (inicio < 1 || fim < 1 || inicio > fim) {
+            return null;
+        }
+
+        return texto.substring(inicio - 1, fim);
+    }
+	
+	public static String removeFormatting(String textoFormatado) {
+        if (textoFormatado == null || textoFormatado.isEmpty()) {
+            return "";
+        }
+        return textoFormatado.replaceAll("\\D", "");
+    }
 
 }
