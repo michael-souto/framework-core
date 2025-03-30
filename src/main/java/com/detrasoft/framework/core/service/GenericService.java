@@ -54,7 +54,12 @@ public abstract class GenericService {
 		String message = Translator.getTranslatedText(code.toString().toLowerCase(), args);
         MessageFunctionsCore.addMessage(messages, code.toString(), target, message, type);
 	}
-
+	
+	public void addMessageTranslated(String code, String target, MessageType type, Object ...args) {
+		String message = Translator.getTranslatedText(code.toString().toLowerCase(), args);
+        MessageFunctionsCore.addMessage(messages, code.toString(), target, message, type);
+	}
+	
 	protected Throwable getRootCause(Throwable throwable) {
 		Throwable cause = throwable.getCause();
 		if (cause != null && cause != throwable) {
