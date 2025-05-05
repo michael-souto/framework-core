@@ -56,7 +56,7 @@ public abstract class GenericService {
 	}
 	
 	public void addMessageTranslated(String code, String target, MessageType type, Object ...args) {
-		String message = Translator.getTranslatedText(code.toString().toLowerCase(), args);
+		String message = Translator.getTranslatedText(code.toString(), args);
         MessageFunctionsCore.addMessage(messages, code.toString(), target, message, type);
 	}
 	
