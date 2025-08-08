@@ -9,6 +9,9 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.Instant;
+import java.util.Locale;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -164,6 +167,70 @@ public class GeneralFunctionsCore {
 		ZonedDateTime zdtAtET = ZonedDateTime.now(ZoneId.of(GMT));
 		return zdtAtET.toLocalTime();
 	}
+	public static String formatDate(LocalDate date, String language) {
+		return formatDate(date, getLocale(language));
+	}
+
+	public static String formatDateTime(LocalDateTime date, String language) {
+		return formatDateTime(date, getLocale(language));
+	}
+
+	public static String formatDate(LocalDate date, Locale locale) {
+		DateTimeFormatter formatter = DateTimeFormatter
+				.ofPattern(getDatePattern(locale), locale);
+		return date.format(formatter);
+	}
+
+	public static String formatDateTime(LocalDateTime date, Locale locale) {
+		ZonedDateTime zdt = date.atZone(ZoneId.systemDefault())
+				.withZoneSameInstant(ZoneId.of(GMT));
+
+		DateTimeFormatter formatter = DateTimeFormatter
+				.ofPattern(getDateTimePattern(locale), locale);
+		return zdt.format(formatter);
+	}
+
+	public static String formatDate(Instant instant, Locale locale) {
+        ZonedDateTime zdt = instant.atZone(ZoneId.of(GMT));
+        DateTimeFormatter formatter = DateTimeFormatter
+                .ofPattern(getDatePattern(locale), locale);
+        return zdt.toLocalDate().format(formatter);
+    }
+
+    public static String formatDateTime(Instant instant, Locale locale) {
+        ZonedDateTime zdt = instant.atZone(ZoneId.of(GMT));
+        DateTimeFormatter formatter = DateTimeFormatter
+                .ofPattern(getDateTimePattern(locale), locale);
+        return zdt.format(formatter);
+    }
+
+
+	private static Locale getLocale(String language) {
+		return switch (language.toLowerCase()) {
+			case "pt" -> new Locale("pt", "BR"); // Português
+			case "en" -> Locale.US; // Inglês (Estados Unidos)
+			case "es" -> new Locale("es", "ES"); // Espanhol (Espanha)
+			case "fr" -> Locale.FRANCE; // Francês
+			case "de" -> Locale.GERMANY; // Alemão
+			default -> new Locale("pt", "BR"); // Default: Português
+		};
+	}
+
+	private static String getDatePattern(Locale locale) {
+		return switch (locale.getLanguage()) {
+			case "en" -> "MM/dd/yyyy";
+			case "es", "fr", "de", "pt" -> "dd/MM/yyyy";
+			default -> "dd/MM/yyyy";
+		};
+	}
+
+	private static String getDateTimePattern(Locale locale) {
+		return switch (locale.getLanguage()) {
+			case "en" -> "MM/dd/yyyy HH:mm:ss";
+			case "es", "fr", "de", "pt" -> "dd/MM/yyyy HH:mm:ss";
+			default -> "dd/MM/yyyy HH:mm:ss";
+		};
+	}
 
 	public static boolean isValidUUID(String uuidString) {
 		try {
@@ -275,6 +342,13 @@ public class GeneralFunctionsCore {
         return texto.replaceAll("\\s", "");
     }
 	
+	public static String removeFormatting(String textoFormatado) {
+		if (textoFormatado == null || textoFormatado.isEmpty()) {
+			return "";
+		}
+		return textoFormatado.replaceAll("\\D", "");
+	}
+
 	public static String copySubstring(String texto, String intervalo) {
         if (texto == null || intervalo == null || intervalo.length() < 5) {
             return null;
