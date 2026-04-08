@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeParseException;
 import java.time.format.DateTimeFormatter;
 import java.time.Instant;
 import java.util.Locale;
@@ -135,6 +136,41 @@ public class GeneralFunctionsCore {
 			result = stringValue.toString();
 		}
 		return result;
+	}
+
+	public static Instant ObjectToInstant(Object instantValue) {
+		if (instantValue == null) {
+			return null;
+		}
+		if (instantValue instanceof Instant) {
+			return (Instant) instantValue;
+		}
+
+		String value = instantValue.toString();
+		if (value.isBlank()) {
+			return null;
+		}
+
+		try {
+			return Instant.parse(value);
+		} catch (DateTimeParseException ignored) {
+			// fallback para formato legado salvo como epoch (segundos/milisegundos)
+		}
+
+		try {
+			BigDecimal epoch = new BigDecimal(value);
+			if (epoch.scale() <= 0 && epoch.abs().compareTo(BigDecimal.valueOf(1_000_000_000_000L)) >= 0) {
+				return Instant.ofEpochMilli(epoch.longValue());
+			}
+			long seconds = epoch.longValue();
+			int nanos = epoch.subtract(BigDecimal.valueOf(seconds))
+					.movePointRight(9)
+					.abs()
+					.intValue();
+			return Instant.ofEpochSecond(seconds, nanos);
+		} catch (NumberFormatException ignored) {
+			return null;
+		}
 	}
 
 	public static BigDecimal ObjectToBigDecimal(Object bigDecimalValue) {
