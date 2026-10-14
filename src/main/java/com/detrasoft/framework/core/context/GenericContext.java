@@ -19,6 +19,15 @@ public class GenericContext {
         }
     }
 
+    /**
+     * Descarta o contexto da thread atual. Threads de servlet sao reaproveitadas:
+     * sem isto a proxima requisicao (inclusive anonima) herdava detrasoftId/userId
+     * do usuario anterior.
+     */
+    public static void clear() {
+        contexts.remove();
+    }
+
     public static void setContexts(String key, String value) {
         var context = contexts.get();
         if (context == null) {
